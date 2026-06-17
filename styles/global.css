@@ -1,0 +1,16 @@
+@import "tailwindcss";
+
+@theme inline {
+    --font-wc2026: "WC2026", sans-serif;
+    --font-nunito: "Nunito";
+}
+
+@font-face {
+    font-family: "WC2026";
+    src: url("/fonts/FWC2026-UltraCondensedMedium.ttf");
+}
+
+@font-face {
+    font-family: "Nunito";
+    src: url("/fonts/Nunito-VariableFont.ttf");
+}

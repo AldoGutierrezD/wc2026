@@ -1,28 +1,24 @@
 import "@/styles/global.css";
-import { getMatchesByDate } from "@/services/matches";
+import { getMatchesByTeam } from "@/services/matches";
 import { getPredictionsByMatches } from "@/services/predictions";
-import DateNavigator from "@/components/DateNavigator";
 import MatchCard from "@/components/MatchCard";
 import { Match, MatchWithPredictions } from "@/types/interfaces";
 
-interface HomeProps {
-    searchParams: Promise<{ date?: string }>;
+interface TeamProps {
+    params: Promise<{ slug: string }>;
 }
 
-export default async function Home({ searchParams }: HomeProps) {
+export default async function Home({ params }: TeamProps) {
 
-    const { date: dateParam } = await searchParams;
-    const today = new Date();
-    const date = dateParam ?? `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+    const { slug } = await params;
 
-    const matches = await getMatchesByDate(date);
+    const matches = await getMatchesByTeam(slug);
 
     const matchIds = matches.map((match: Match) => match.id);
     const predictions = await getPredictionsByMatches(matchIds);
 
     return (
         <div className="w-full">
-            <DateNavigator date={date} />
             {matches.map((match: Match) => {
                 const matchPredictions = predictions.filter(p => p.match_id === match.id);
                 const matchWithPredictions: MatchWithPredictions = { ...match, predictions: matchPredictions };
