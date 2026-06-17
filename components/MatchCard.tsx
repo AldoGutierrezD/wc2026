@@ -133,7 +133,7 @@ export default function MatchCard({ matchId, predictions, stadium, date, homeTea
                         <input
                             type="number"
                             min="0"
-                            className="w-36 text-center border rounded"
+                            className="w-20 md:w-36 text-center border rounded"
                             value={scores[player].home}
                             onChange={(e) => setScores(prev => ({
                                 ...prev,
@@ -144,7 +144,7 @@ export default function MatchCard({ matchId, predictions, stadium, date, homeTea
                         <input
                             type="number"
                             min="0"
-                            className="w-36 text-center border rounded"
+                            className="w-20 md:w-36 text-center border rounded"
                             value={scores[player].away}
                             onChange={(e) => setScores(prev => ({
                                 ...prev,

@@ -30,9 +30,9 @@ export default function RootLayout({
             className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
         >
             <body className="min-h-full flex flex-col bg-red-300">
-                <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-                    <div className="flex flex-1 w-full max-w-3xl flex-col items-center py-20 px-16 sm:items-start">
-                        <nav className="mb-8 flex gap-2">
+                <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans">
+                    <div className="flex flex-1 w-full max-w-3xl flex-col items-center py-20 px-4 md:px-16 sm:items-start">
+                        <nav className="w-full mb-8 flex flex-wrap gap-2">
                             <Link href="/" className="bg-black text-amber-300 font-wc2026 text-xl py-2 px-6 rounded-md flex justify-center items-center gap-2">
                                 <Trophy size={20} />
                                 <span>WC 2026</span>
