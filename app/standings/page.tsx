@@ -74,9 +74,9 @@ export default async function StandingsPage() {
             <div className="flex items-end justify-center gap-4 max-w-md mx-auto font-nunito">
                 {podiumOrder.map(({ player, points, height, color, position }) => (
                     <div key={player} className="flex flex-col items-center flex-1">
-                        <p className="text-xl font-semibold mb-2">{points}</p>
+                        <p className="text-xl font-semibold mb-2 dark:text-black">{points}</p>
                         <div className={`w-full ${height} ${color} rounded-t-lg flex items-start justify-center pt-3`}>
-                            <span className="font-bold font-wc2026 text-2xl">{player}</span>
+                            <span className="font-bold font-wc2026 text-3xl dark:text-black">{player}</span>
                         </div>
                         <div className="w-7 h-7 rounded-full bg-black text-white text-xs flex items-center justify-center -mt-3">
                             {position}
@@ -85,7 +85,7 @@ export default async function StandingsPage() {
                 ))}
             </div>
 
-            <table className="w-full mt-8 text-sm font-nunito rounded-2xl">
+            <table className="w-full mt-8 text-sm font-nunito bg-white">
                 <thead className="bg-[#fa0260] text-white">
                     <tr className="border-b">
                         <th className="text-left p-2">Partido</th>
