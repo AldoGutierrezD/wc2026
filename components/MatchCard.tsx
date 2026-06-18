@@ -5,11 +5,12 @@ import Image from "next/image"
 import { PLAYERS } from "@/constants";
 import { savePrediction } from "@/services/predictions";
 import { Prediction } from "@/types/interfaces";
-import { CircleCheckBig } from "lucide-react";
+import { CheckCheck, CircleCheckBig } from "lucide-react";
 
 type Props = {
     matchId: number,
-    stadium: string,
+    group: string,
+    stage: string,
     date: string,
     homeTeam: string,
     homeTeamBadge: string,
@@ -22,7 +23,7 @@ type Props = {
     predictions: Prediction[]
 }
 
-export default function MatchCard({ matchId, predictions, stadium, date, homeTeam, homeTeamBadge, awayTeam, awayTeamBadge, strStatus, intHomeScore, intAwayScore, strCountry }: Props) {
+export default function MatchCard({ matchId, predictions, group, stage, date, homeTeam, homeTeamBadge, awayTeam, awayTeamBadge, strStatus, intHomeScore, intAwayScore, strCountry }: Props) {
 
     const countryColors = {
         "Mexico": ['#afea00', '#01c852', '#004d40'],
@@ -83,6 +84,14 @@ export default function MatchCard({ matchId, predictions, stadium, date, homeTea
         }, {} as Record<string, { home: string; away: string }>)
     );
 
+    const [saved, setSaved] = useState<Record<string, boolean>>(
+        PLAYERS.reduce((acc, player) => {
+            const existing = predictions.find(p => p.player_name === player);
+            acc[player] = !!existing;
+            return acc;
+        }, {} as Record<string, boolean>)
+    );
+
     function getResult(home: number, away: number) {
         if (home > away) return 'HOME';
         if (home < away) return 'AWAY';
@@ -98,74 +107,81 @@ export default function MatchCard({ matchId, predictions, stadium, date, homeTea
         const prediction = getResult(homeScore, awayScore);
 
         await savePrediction(matchId, player, prediction, homeScore, awayScore);
+        setSaved(prev => ({ ...prev, [player]: true }));
     }
 
     return (
-        <div className="bg-white w-full mb-3 rounded-3xl relative">
-            <div className="w-full p-4 font-nunito">
-                <div className="flex justify-between items-center mb-4 font-light text-sm">
-                    <span>{stadium}</span>
-                    <span>{setFormatDate(date)}</span>
-                </div>
-                <div className="outline-4 outline-zinc-50 w-20 h-6 flex justify-center items-center absolute top-0 left-1/2 -translate-x-1/2 rounded-full"
-                    style={{ backgroundColor: getMatchStatusColor(strStatus) }}>
-                    <span className="text-center text-sm font-bold">{strStatus}</span>
-                </div>
-                <div className="grid grid-cols-3">
-                    <div className="flex flex-col justify-center items-center">
-                        <Image src={homeTeamBadge} width={50} height={50} alt="" />
-                        <span>{homeTeam}</span>
+        <div
+            className="rounded-3xl py-1.5 px-4 mb-5"
+            style={{
+                background: 'linear-gradient(to right, #b287fc 0%, #b287fc 15%, #a90f1d 15%, #a90f1d 50%, #b9e253 50%, #b9e253 85%, #b287fc 85%, #b287fc 100%)'
+            }}
+        >
+            <div className="bg-white w-full rounded-[20px] relative text-black dark:text-black">
+                <div className="w-full p-4 font-nunito">
+                    <div className="flex justify-between items-center mb-4 font-light text-xs">
+                        <span>{group}</span>
+                        <span>{stage}</span>
                     </div>
-                    <h4 className="font-wc2026 text-5xl text-center">{getMatchStatus(strStatus)}</h4>
-                    <div className="flex flex-col justify-center items-center">
-                        <Image src={awayTeamBadge} width={50} height={50} alt="" />
-                        <span>{awayTeam}</span>
+                    <div className="w-20 h-6 flex justify-center items-center absolute top-5 left-1/2 -translate-x-1/2 rounded-full"
+                        style={{ backgroundColor: getMatchStatusColor(strStatus) }}>
+                        <span className="text-center text-xs font-bold">{strStatus}</span>
                     </div>
-                </div>
-            </div>
-            <div className="p-4 flex flex-col gap-2 font-wc2026 text-xl">
-                {PLAYERS.map(player => (
-                    <div key={player} className="flex justify-between items-center gap-2">
-                        <div className="flex items-center gap-2">
-                            <div className="w-4 h-4 rounded-full" style={{ backgroundColor: playerColors[player] }}></div>
-                            <span className="w-6">{player}</span>
+                    <div className="grid grid-cols-3">
+                        <div className="flex flex-col justify-center items-center">
+                            <Image src={homeTeamBadge} width={50} height={50} alt="" />
+                            <span>{homeTeam}</span>
                         </div>
-                        <input
-                            type="number"
-                            min="0"
-                            className="w-20 md:w-36 text-center border rounded"
-                            value={scores[player].home}
-                            onChange={(e) => setScores(prev => ({
-                                ...prev,
-                                [player]: { ...prev[player], home: e.target.value }
-                            }))}
-                        />
-                        <span>-</span>
-                        <input
-                            type="number"
-                            min="0"
-                            className="w-20 md:w-36 text-center border rounded"
-                            value={scores[player].away}
-                            onChange={(e) => setScores(prev => ({
-                                ...prev,
-                                [player]: { ...prev[player], away: e.target.value }
-                            }))}
-                        />
-                        <button
-                            onClick={() => handleSave(player)}
-                            className="text-sm bg-[#00c752] text-white px-2 py-1 rounded cursor-pointer hover:shadow-md"
-                        >
-                            <CircleCheckBig size={16} />
-                        </button>
+                        <h4 className="font-wc2026 text-5xl text-center">{getMatchStatus(strStatus)}</h4>
+                        <div className="flex flex-col justify-center items-center">
+                            <Image src={awayTeamBadge} width={50} height={50} alt="" />
+                            <span>{awayTeam}</span>
+                        </div>
                     </div>
-                ))}
-            </div>
-            {/* <div className="w-full">
-                <div className="w-full h-2.5" style={{ backgroundColor: colors[0] }}></div>
-                <div className="w-full h-2.5" style={{ backgroundColor: colors[1] }}></div>
-                <div className="w-full h-2.5 rounded-bl-3xl rounded-br-3xl" style={{ backgroundColor: colors[2] }}></div>
-            </div> */}
-        </div >
+                </div>
+                <div className="p-4 flex flex-col gap-2 font-wc2026 text-xl">
+                    {PLAYERS.map(player => (
+                        <div key={player} className="flex justify-between items-center gap-2">
+                            <div className="flex items-center gap-2">
+                                <div className="w-4 h-4 rounded-full" style={{ backgroundColor: playerColors[player] }}></div>
+                                <span className="w-6">{player}</span>
+                            </div>
+                            <input
+                                type="number"
+                                min="0"
+                                className="w-20 md:w-36 text-center border rounded"
+                                value={scores[player].home}
+                                onChange={(e) => setScores(prev => ({
+                                    ...prev,
+                                    [player]: { ...prev[player], home: e.target.value }
+                                }))}
+                            />
+                            <span>-</span>
+                            <input
+                                type="number"
+                                min="0"
+                                className="w-20 md:w-36 text-center border rounded"
+                                value={scores[player].away}
+                                onChange={(e) => setScores(prev => ({
+                                    ...prev,
+                                    [player]: { ...prev[player], away: e.target.value }
+                                }))}
+                            />
+                            {saved[player] ? (
+                                <CheckCheck size={20} className="text-[#00c752] font-bold" />
+                            ) : (
+                                <button
+                                    onClick={() => handleSave(player)}
+                                    className="text-sm bg-[#00c752] text-white px-2 py-1 rounded cursor-pointer hover:shadow-md"
+                                >
+                                    <CircleCheckBig size={16} />
+                                </button>
+                            )}
+                        </div>
+                    ))}
+                </div>
+            </div >
+        </div>
     )
 
 }

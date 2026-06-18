@@ -57,7 +57,7 @@ export interface Match {
     status: string;
     matchday: number;
     stage: string;
-    group: string | null;
+    group: string;
     lastUpdated: string;
     homeTeam: Team;
     awayTeam: Team;

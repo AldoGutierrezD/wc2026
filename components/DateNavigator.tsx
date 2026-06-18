@@ -28,14 +28,14 @@ export default function DateNavigator({ date }: DateNavigatorProps) {
         <div className="w-full flex justify-between items-center gap-4 mb-4">
             <button
                 onClick={() => navigate(-1)}
-                className="bg-[#00c752] w-8 h-8 rounded-md cursor-pointer flex justify-center items-center"
+                className="bg-[#fa0260] w-8 h-8 rounded-md cursor-pointer flex justify-center items-center"
             >
                 <ChevronLeft size={16} className="text-white font-bold" />
             </button>
-            <span className="font-wc2026 text-3xl">{setFormatDate(date)}</span>
+            <span className="font-wc2026 text-3xl text-black dark:text-black">{setFormatDate(date)}</span>
             <button
                 onClick={() => navigate(1)}
-                className="bg-[#00c752] w-8 h-8 rounded-md cursor-pointer flex justify-center items-center"
+                className="bg-[#fa0260] w-8 h-8  rounded-md cursor-pointer flex justify-center items-center"
             >
                 <ChevronRight size={16} className="text-white font-bold" />
             </button>

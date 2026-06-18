@@ -26,11 +26,14 @@ export default async function Home({ searchParams }: HomeProps) {
             {matches.map((match: Match) => {
                 const matchPredictions = predictions.filter(p => p.match_id === match.id);
                 const matchWithPredictions: MatchWithPredictions = { ...match, predictions: matchPredictions };
+                const groupStr = match.group.replace('_', ' ');
+                const stageStr = match.stage.replace('_', ' ');
                 return (
                     <MatchCard
                         key={match.id}
                         matchId={match.id}
-                        stadium=""
+                        group={groupStr}
+                        stage={stageStr}
                         date={match.utcDate}
                         homeTeam={match.homeTeam.name}
                         homeTeamBadge={match.homeTeam.crest}
