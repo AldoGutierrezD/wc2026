@@ -25,19 +25,11 @@ type Props = {
 
 export default function MatchCard({ matchId, predictions, group, stage, date, homeTeam, homeTeamBadge, awayTeam, awayTeamBadge, strStatus, intHomeScore, intAwayScore, strCountry }: Props) {
 
-    const countryColors = {
-        "Mexico": ['#afea00', '#01c852', '#004d40'],
-        "Canada": ['#ff3d00', '#d40100', '#741311'],
-        "United States": ['#83b1ff', '#304fff', '#1b237e']
-    };
-
     const playerColors: Record<string, string> = {
         "A": '#01c852',
         "P": '#304fff',
         "J": '#b57edc'
     };
-
-    const colors = countryColors[strCountry as keyof typeof countryColors];
 
     const timeMexico = new Date(date).toLocaleTimeString('es-MX', {
         timeZone: 'America/Mexico_City',

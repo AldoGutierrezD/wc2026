@@ -5,7 +5,7 @@ export async function getAllMatches() {
             headers: {
                 'X-Auth-Token': process.env.FOOTBALL_DATA_TOKEN!
             },
-            cache: 'no-store'
+            next: { revalidate: 60 }
         }
     );
 
@@ -37,4 +37,24 @@ export async function getMatchesByTeam(team: string) {
     return events.filter(({ homeTeam, awayTeam }: { homeTeam: { name: string }, awayTeam: { name: string } }) =>
         homeTeam.name === team || awayTeam.name === team
     );
+}
+
+
+export async function getStandings() {
+    const response = await fetch(
+        'https://api.football-data.org/v4/competitions/WC/standings',
+        {
+            headers: {
+                'X-Auth-Token': process.env.FOOTBALL_DATA_TOKEN!
+            },
+            next: { revalidate: 60 }
+        }
+    );
+
+    if (!response.ok) {
+        console.error('Error al obtener standings');
+    }
+
+    const data = await response.json();
+    return data.standings.filter(({ type }: { type: string }) => type === 'TOTAL');
 }

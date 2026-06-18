@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { Sheet, Trophy, Crown, Flag } from "lucide-react";
+import { Sheet, Trophy, Crown } from "lucide-react";
 import Link from "next/link";
 import "./globals.css";
 import Image from "next/image";
@@ -50,10 +50,10 @@ export default function RootLayout({
                                 <Image src="https://crests.football-data.org/762.svg" width={25} height={0} alt="Bandera de México" />
                                 <span>ARGENTINA</span>
                             </Link>
-                            {/* <Link href="/" className="bg-[#ea1f6e] text-white font-wc2026 text-xl py-2 px-6 rounded-md flex justify-center items-center gap-2">
+                            <Link href="/groups" className="bg-[#ea1f6e] text-white font-wc2026 text-xl py-2 px-6 rounded-md flex justify-center items-center gap-2">
                                 <Sheet size={20} />
                                 <span>GRUPOS</span>
-                            </Link> */}
+                            </Link>
                             <Link href="/standings" className="bg-[#eeff41] text-black font-wc2026 text-xl py-2 px-6 rounded-md flex justify-center items-center gap-2">
                                 <Crown size={20} />
                                 <span>RANKING</span>
