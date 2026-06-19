@@ -62,7 +62,7 @@ export default function MatchCard({ matchId, predictions, group, stage, date, ho
         const year = localDate.split('-')[0];
         const month = parseInt(localDate.split('-')[1]) - 1;
         const day = localDate.split('-')[2];
-        return `${day}.${MONTHS[month]}.${year}`;
+        return `${day}.${MONTHS[month]}`;
     }
 
     const [scores, setScores] = useState<Record<string, { home: string; away: string }>>(
@@ -111,9 +111,9 @@ export default function MatchCard({ matchId, predictions, group, stage, date, ho
         >
             <div className="bg-white w-full rounded-[20px] relative text-black dark:text-black">
                 <div className="w-full p-4 font-nunito">
-                    <div className="flex justify-between items-center mb-4 text-xs">
-                        <span className="font-medium">{stage} <span className="font-light">({group})</span></span>
-                        <span>{setFormatDate(date)}</span>
+                    <div className="flex justify-between items-center mb-4 font-light text-xs">
+                        <span>{group}</span>
+                        <span>{stage}</span>
                     </div>
                     <div className="w-20 h-6 flex justify-center items-center absolute top-5 left-1/2 -translate-x-1/2 rounded-full"
                         style={{ backgroundColor: getMatchStatusColor(strStatus) }}>
@@ -124,7 +124,10 @@ export default function MatchCard({ matchId, predictions, group, stage, date, ho
                             <Image src={homeTeamBadge} width={50} height={50} alt="" />
                             <span>{homeTeam}</span>
                         </div>
-                        <h4 className="font-wc2026 text-5xl text-center">{getMatchStatus(strStatus)}</h4>
+                        <div className="flex flex-col text-center">
+                            <h4 className="font-wc2026 text-5xl text-center">{getMatchStatus(strStatus)}</h4>
+                            <span className="text-xs">{setFormatDate(date)}</span>
+                        </div>
                         <div className="flex flex-col justify-center items-center">
                             <Image src={awayTeamBadge} width={50} height={50} alt="" />
                             <span>{awayTeam}</span>
