@@ -111,9 +111,9 @@ export default function MatchCard({ matchId, predictions, group, stage, date, ho
         >
             <div className="bg-white w-full rounded-[20px] relative text-black dark:text-black">
                 <div className="w-full p-4 font-nunito">
-                    <div className="flex justify-between items-center mb-4 font-light text-xs">
-                        <span>{group}</span>
-                        <span>{stage}</span>
+                    <div className="flex justify-between items-center mb-4 text-xs">
+                        <span className="font-medium">{stage} <span className="font-light">({group})</span></span>
+                        <span>{setFormatDate(date)}</span>
                     </div>
                     <div className="w-20 h-6 flex justify-center items-center absolute top-5 left-1/2 -translate-x-1/2 rounded-full"
                         style={{ backgroundColor: getMatchStatusColor(strStatus) }}>
