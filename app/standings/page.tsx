@@ -61,20 +61,24 @@ export default async function StandingsPage() {
         { ...third, height: 'h-16', color: 'bg-sky-300', position: 3 },
     ];
 
-    function getPlayerResult(matchId: number, player: string) {
+    const matchesWithPredictions = finishedMatches.filter(({ id }: { id: number }) =>
+        predictions.some(p => p.match_id === id)
+    );
+
+    function getPlayerPoints(matchId: number, player: string) {
         const prediction = predictions.find(p => p.match_id === matchId && p.player_name === player);
         if (!prediction) return null;
 
         const match = finishedMatches.find(({ id }: { id: number }) => id === matchId);
         if (!match) return null;
 
-        const actualResult = getResult(match.score.fullTime.home, match.score.fullTime.away);
-        return actualResult === prediction.prediction;
+        return getPoints(
+            match.score.fullTime.home,
+            match.score.fullTime.away,
+            prediction.predicted_home_score,
+            prediction.predicted_away_score
+        );
     }
-
-    const matchesWithPredictions = finishedMatches.filter(({ id }: { id: number }) =>
-        predictions.some(p => p.match_id === id)
-    );
 
     return (
         <div>
@@ -94,7 +98,7 @@ export default async function StandingsPage() {
                         <div className={`w-full ${height} ${color} rounded-t-lg border-3 border-black flex items-start justify-center pt-3`}>
                             <p className="font-semibold dark:text-black">{points} pts</p>
                         </div>
-                        <div className="w-10 h-10 rounded-full bg-amber-100 text-dark outline-3 outline-black text-sm font-bold flex items-center justify-center -mt-3">
+                        <div className="w-10 h-10 rounded-full bg-amber-100 text-dark outline-3 outline-black text-sm font-bold flex items-center justify-center -mt-3 text-dark">
                             {position}
                         </div>
                     </div>
@@ -111,15 +115,25 @@ export default async function StandingsPage() {
                     </tr>
                 </thead>
                 <tbody className="text-black">
-                    {matchesWithPredictions.map(({ id, homeTeam, awayTeam }: { id: number, homeTeam: { name: string }, awayTeam: { name: string } }) => (
+                    {matchesWithPredictions.map(({ id, homeTeam, awayTeam, score }: {
+                        id: number,
+                        homeTeam: { name: string },
+                        awayTeam: { name: string },
+                        score: { fullTime: { home: number, away: number } }
+                    }) => (
                         <tr key={id}>
-                            <td className="p-2">{homeTeam.name} vs {awayTeam.name}</td>
+                            <td className="p-2 text-xs md:text-base">
+                                {homeTeam.name} vs {awayTeam.name} ({score.fullTime.home} - {score.fullTime.away})
+                            </td>
                             {PLAYERS.map(player => {
-                                const result = getPlayerResult(id, player);
+                                const points = getPlayerPoints(id, player);
                                 return (
                                     <td key={player} className="p-2 text-center">
-                                        {result === null ? '-' : result ? (
-                                            <Check size={16} className="inline text-green-500" />
+                                        {points === null ? '-' : points > 0 ? (
+                                            <span className="inline-flex items-center gap-1">
+                                                <Check size={16} className="text-green-500" />
+                                                <span className="text-xs text-green-600">+{points}</span>
+                                            </span>
                                         ) : (
                                             <X size={16} className="inline text-red-500" />
                                         )}

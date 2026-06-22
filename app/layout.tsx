@@ -58,6 +58,10 @@ export default function RootLayout({
                                 <Crown size={20} />
                                 <span>RANKING</span>
                             </Link>
+                            <Link href="/champion" className="bg-[#7119ed] text-white font-wc2026 text-xl py-2 px-6 rounded-md flex justify-center items-center gap-2">
+                                <Trophy size={20} />
+                                <span>CAMPEÓN</span>
+                            </Link>
                         </nav>
                         <main className="w-full">
                             {children}
