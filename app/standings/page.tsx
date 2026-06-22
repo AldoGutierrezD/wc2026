@@ -98,7 +98,7 @@ export default async function StandingsPage() {
                         <div className={`w-full ${height} ${color} rounded-t-lg border-3 border-black flex items-start justify-center pt-3`}>
                             <p className="font-semibold dark:text-black">{points} pts</p>
                         </div>
-                        <div className="w-10 h-10 rounded-full bg-amber-100 text-dark outline-3 outline-black text-sm font-bold flex items-center justify-center -mt-3 text-dark">
+                        <div className="w-10 h-10 rounded-full bg-amber-100 text-black outline-3 outline-black text-sm font-bold flex items-center justify-center -mt-3">
                             {position}
                         </div>
                     </div>
