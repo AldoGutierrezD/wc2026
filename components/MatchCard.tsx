@@ -163,7 +163,12 @@ export default function MatchCard({ matchId, predictions, group, stage, date, ho
                                 }))}
                             />
                             {saved[player] ? (
-                                <CheckCheck size={20} className="text-[#00c752] font-bold" />
+                                <button
+                                    onClick={() => handleSave(player)}
+                                    className="text-sm bg-[#00c752] text-white px-2 py-1 rounded cursor-pointer hover:shadow-md"
+                                >
+                                    <CircleCheckBig size={16} />
+                                </button>
                             ) : (
                                 <button
                                     onClick={() => handleSave(player)}
