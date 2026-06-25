@@ -39,15 +39,15 @@ export default async function GroupsPage() {
                                     <td className="p-2">
                                         <div className="flex items-center gap-2">
                                             <Image src={team.crest} width={20} height={20} alt={team.name} />
-                                            <span>{team.shortName}</span>
+                                            <span className="text-black">{team.shortName}</span>
                                         </div>
                                     </td>
-                                    <td className="p-2 text-center">{playedGames}</td>
-                                    <td className="p-2 text-center">{won}</td>
-                                    <td className="p-2 text-center">{draw}</td>
-                                    <td className="p-2 text-center">{lost}</td>
-                                    <td className="p-2 text-center">{goalDifference}</td>
-                                    <td className="p-2 text-center font-bold">{points}</td>
+                                    <td className="p-2 text-center text-black">{playedGames}</td>
+                                    <td className="p-2 text-center text-black">{won}</td>
+                                    <td className="p-2 text-center text-black">{draw}</td>
+                                    <td className="p-2 text-center text-black">{lost}</td>
+                                    <td className="p-2 text-center text-black">{goalDifference}</td>
+                                    <td className="p-2 text-center text-black font-bold">{points}</td>
                                 </tr>
                             ))}
                         </tbody>
