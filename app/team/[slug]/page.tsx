@@ -22,7 +22,7 @@ export default async function Home({ params }: TeamProps) {
             {matches.map((match: Match) => {
                 const matchPredictions = predictions.filter(p => p.match_id === match.id);
                 const matchWithPredictions: MatchWithPredictions = { ...match, predictions: matchPredictions };
-                const groupStr = match.group.replace('_', ' ');
+                const groupStr = match.group ? match.group.replace('_', ' ') : 'Eliminatorias';
                 const stageStr = match.stage.replace('_', ' ');
                 return (
                     <MatchCard

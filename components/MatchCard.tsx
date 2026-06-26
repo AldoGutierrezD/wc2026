@@ -121,7 +121,13 @@ export default function MatchCard({ matchId, predictions, group, stage, date, ho
                     </div>
                     <div className="grid grid-cols-3">
                         <div className="flex flex-col justify-center items-center">
-                            <Image src={homeTeamBadge} width={50} height={50} alt="" />
+                            {homeTeamBadge ? (
+                                <Image src={homeTeamBadge} width={50} height={50} alt="" />
+                            ) : (
+                                <div className="w-12.5 h-12.5 bg-gray-200 rounded-full flex items-center justify-center">
+                                    <span className="text-xs text-gray-400">?</span>
+                                </div>
+                            )}
                             <span>{homeTeam}</span>
                         </div>
                         <div className="flex flex-col text-center">
@@ -129,7 +135,13 @@ export default function MatchCard({ matchId, predictions, group, stage, date, ho
                             <span className="text-xs">{setFormatDate(date)}</span>
                         </div>
                         <div className="flex flex-col justify-center items-center">
-                            <Image src={awayTeamBadge} width={50} height={50} alt="" />
+                            {awayTeamBadge ? (
+                                <Image src={awayTeamBadge} width={50} height={50} alt="" />
+                            ) : (
+                                <div className="w-12.5 h-12.5 bg-gray-200 rounded-full flex items-center justify-center">
+                                    <span className="text-xs text-gray-400">?</span>
+                                </div>
+                            )}
                             <span>{awayTeam}</span>
                         </div>
                     </div>
