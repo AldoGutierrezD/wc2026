@@ -1,6 +1,7 @@
 import { getAllMatches } from "@/services/matches";
 import { getAllPredictions } from "@/services/predictions";
 import { PLAYERS } from "@/constants";
+import { Match, Prediction } from "@/types/interfaces";
 import { Check, X } from "lucide-react";
 import Image from "next/image";
 
@@ -25,14 +26,38 @@ export default async function StandingsPage() {
         status === 'FINISHED'
     );
 
-    function getPoints(matchHome: number, matchAway: number, predHome: number, predAway: number) {
-        if (matchHome === predHome && matchAway === predAway) return 2;
+    function getPoints(match: Match, prediction: Prediction) {
+        const regularHome = match.score.regularTime?.home ?? match.score.fullTime.home;
+        const regularAway = match.score.regularTime?.away ?? match.score.fullTime.away;
 
-        const actualResult = getResult(matchHome, matchAway);
-        const predictedResult = getResult(predHome, predAway);
-        if (actualResult === predictedResult) return 1;
+        const predHome = prediction.predicted_home_score;
+        const predAway = prediction.predicted_away_score;
 
-        return 0;
+        if (regularHome === null || regularAway === null || predHome === null || predAway === null) {
+            return 0;
+        }
+
+        let points = 0;
+
+        if (regularHome === predHome && regularAway === predAway) {
+            points += 2;
+        } else {
+            const actualResult = getResult(regularHome, regularAway);
+            const predictedResult = getResult(predHome, predAway);
+            if (actualResult === predictedResult) points += 1;
+        }
+
+        const wasDrawInRegular = regularHome === regularAway;
+        const predictedDraw = predHome === predAway;
+
+        if (wasDrawInRegular && predictedDraw && prediction.advances_team) {
+            const winnerTeam = match.score.winner === 'HOME_TEAM' ? match.homeTeam.name : match.awayTeam.name;
+            if (prediction.advances_team === winnerTeam) {
+                points += 1;
+            }
+        }
+
+        return points;
     }
 
     const standings = PLAYERS.map(player => {
@@ -42,12 +67,7 @@ export default async function StandingsPage() {
             const match = finishedMatches.find(({ id }: { id: number }) => id === prediction.match_id);
             if (!match) return total;
 
-            return total + getPoints(
-                match.score.fullTime.home,
-                match.score.fullTime.away,
-                prediction.predicted_home_score,
-                prediction.predicted_away_score
-            );
+            return total + getPoints(match, prediction);
         }, 0);
 
         return { player, points };
@@ -72,12 +92,7 @@ export default async function StandingsPage() {
         const match = finishedMatches.find(({ id }: { id: number }) => id === matchId);
         if (!match) return null;
 
-        return getPoints(
-            match.score.fullTime.home,
-            match.score.fullTime.away,
-            prediction.predicted_home_score,
-            prediction.predicted_away_score
-        );
+        return getPoints(match, prediction);
     }
 
     return (

@@ -19,7 +19,8 @@ export async function savePrediction(
     playerName: string,
     prediction: string,
     predictedHomeScore: number,
-    predictedAwayScore: number
+    predictedAwayScore: number,
+    advancesTeam: string | null = null
 ) {
     const { data, error } = await supabase
         .from('predictions')
@@ -29,7 +30,8 @@ export async function savePrediction(
                 player_name: playerName,
                 prediction,
                 predicted_home_score: predictedHomeScore,
-                predicted_away_score: predictedAwayScore
+                predicted_away_score: predictedAwayScore,
+                advances_team: advancesTeam
             },
             { onConflict: 'match_id,player_name' }
         )

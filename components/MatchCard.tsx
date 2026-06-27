@@ -38,6 +38,8 @@ export default function MatchCard({ matchId, predictions, group, stage, date, ho
         hour12: false
     });
 
+    const isFinished = strStatus === 'FINISHED';
+
     function getMatchStatus(status: string) {
         if (['SCHEDULED', 'TIMED'].includes(status)) return `${timeMexico}`;
         if (['IN_PLAY', 'PAUSED'].includes(status)) return `${intHomeScore} - ${intAwayScore}`;
@@ -98,8 +100,26 @@ export default function MatchCard({ matchId, predictions, group, stage, date, ho
         const awayScore = parseInt(away);
         const prediction = getResult(homeScore, awayScore);
 
-        await savePrediction(matchId, player, prediction, homeScore, awayScore);
+        const isDrawPrediction = homeScore === awayScore;
+        const advances = isKnockout && isDrawPrediction ? advancesTeam[player] || null : null;
+
+        await savePrediction(matchId, player, prediction, homeScore, awayScore, advances);
         setSaved(prev => ({ ...prev, [player]: true }));
+    }
+
+    const [advancesTeam, setAdvancesTeam] = useState<Record<string, string>>(
+        PLAYERS.reduce((acc, player) => {
+            const existing = predictions.find(p => p.player_name === player);
+            acc[player] = existing?.advances_team ?? '';
+            return acc;
+        }, {} as Record<string, string>)
+    );
+
+    const isKnockout = stage !== 'GROUP STAGE';
+
+    function isDraw(player: string) {
+        const { home, away } = scores[player];
+        return home !== '' && away !== '' && home === away;
     }
 
     return (
@@ -148,41 +168,60 @@ export default function MatchCard({ matchId, predictions, group, stage, date, ho
                 </div>
                 <div className="p-4 flex flex-col gap-2 font-wc2026 text-xl">
                     {PLAYERS.map(player => (
-                        <div key={player} className="flex justify-between items-center gap-2">
-                            <div className="flex items-center gap-2">
-                                <div className="w-4 h-4 rounded-full" style={{ backgroundColor: playerColors[player] }}></div>
-                                <span className="w-6">{player}</span>
+                        <div key={player} className="flex flex-col gap-1">
+                            <div className="flex justify-between items-center gap-2">
+                                <div className="flex items-center gap-2">
+                                    <div className="w-4 h-4 rounded-full" style={{ backgroundColor: playerColors[player] }}></div>
+                                    <span className="w-6">{player}</span>
+                                </div>
+                                <input
+                                    type="number"
+                                    min="0"
+                                    className="w-20 md:w-36 text-center border rounded"
+                                    value={scores[player].home}
+                                    onChange={(e) => setScores(prev => ({
+                                        ...prev,
+                                        [player]: { ...prev[player], home: e.target.value }
+                                    }))}
+                                />
+                                <span>-</span>
+                                <input
+                                    type="number"
+                                    min="0"
+                                    className="w-20 md:w-36 text-center border rounded"
+                                    value={scores[player].away}
+                                    onChange={(e) => setScores(prev => ({
+                                        ...prev,
+                                        [player]: { ...prev[player], away: e.target.value }
+                                    }))}
+                                />
+
+                                {saved[player] ? (
+                                    <CheckCheck size={20} className="text-[#00c752] font-bold" />
+                                ) : (
+                                    <button
+                                        onClick={() => handleSave(player)}
+                                        disabled={isFinished}
+                                        className={`text-sm px-2 py-1 rounded ${isFinished
+                                            ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                                            : 'bg-[#00c752] text-white cursor-pointer hover:shadow-md'
+                                            }`}
+                                    >
+                                        <CircleCheckBig size={16} />
+                                    </button>
+                                )}
                             </div>
-                            <input
-                                type="number"
-                                min="0"
-                                className="w-20 md:w-36 text-center border rounded"
-                                value={scores[player].home}
-                                onChange={(e) => setScores(prev => ({
-                                    ...prev,
-                                    [player]: { ...prev[player], home: e.target.value }
-                                }))}
-                            />
-                            <span>-</span>
-                            <input
-                                type="number"
-                                min="0"
-                                className="w-20 md:w-36 text-center border rounded"
-                                value={scores[player].away}
-                                onChange={(e) => setScores(prev => ({
-                                    ...prev,
-                                    [player]: { ...prev[player], away: e.target.value }
-                                }))}
-                            />
-                            {saved[player] ? (
-                                <CheckCheck size={20} className="text-[#00c752] font-bold" />
-                            ) : (
-                                <button
-                                    onClick={() => handleSave(player)}
-                                    className="text-sm bg-[#00c752] text-white px-2 py-1 rounded cursor-pointer hover:shadow-md"
+
+                            {isKnockout && isDraw(player) && (
+                                <select
+                                    value={advancesTeam[player]}
+                                    onChange={(e) => setAdvancesTeam(prev => ({ ...prev, [player]: e.target.value }))}
+                                    className="text-xs border rounded mx-auto p-1 font-nunito"
                                 >
-                                    <CircleCheckBig size={16} />
-                                </button>
+                                    <option value="">¿Quién avanza?</option>
+                                    <option value={homeTeam}>{homeTeam}</option>
+                                    <option value={awayTeam}>{awayTeam}</option>
+                                </select>
                             )}
                         </div>
                     ))}

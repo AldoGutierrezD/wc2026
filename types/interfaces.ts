@@ -39,6 +39,9 @@ export interface Score {
     duration: string;
     fullTime: ScoreDetail;
     halfTime: ScoreDetail;
+    regularTime?: ScoreDetail;
+    extraTime?: ScoreDetail;
+    penalties?: ScoreDetail;
 }
 
 export interface Referee {
@@ -72,6 +75,7 @@ export interface Prediction {
     prediction: string;
     predicted_home_score: number | null;
     predicted_away_score: number | null;
+    advances_team: string | null;
     created_at: string;
 }
 
