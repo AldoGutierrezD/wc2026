@@ -25,6 +25,8 @@ type Props = {
 
 export default function MatchCard({ matchId, predictions, group, stage, date, homeTeam, homeTeamBadge, awayTeam, awayTeamBadge, strStatus, intHomeScore, intAwayScore, strCountry }: Props) {
 
+    const [errors, setErrors] = useState<Record<string, string>>({});
+
     const playerColors: Record<string, string> = {
         "A": '#01c852',
         "P": '#304fff',
@@ -94,10 +96,21 @@ export default function MatchCard({ matchId, predictions, group, stage, date, ho
 
     async function handleSave(player: string) {
         const { home, away } = scores[player];
-        if (home === '' || away === '') return;
+        if (home === '' || away === '') {
+            setErrors(prev => ({ ...prev, [player]: '*Ingresa el marcador' }));
+            return;
+        }
 
         const homeScore = parseInt(home);
         const awayScore = parseInt(away);
+
+        if (isKnockout && homeScore === awayScore && !advancesTeam[player]) {
+            setErrors(prev => ({ ...prev, [player]: '*¿Quién avanza?' }));
+            return;
+        }
+
+        setErrors(prev => ({ ...prev, [player]: '' }));
+
         const prediction = getResult(homeScore, awayScore);
 
         const isDrawPrediction = homeScore === awayScore;
@@ -197,7 +210,17 @@ export default function MatchCard({ matchId, predictions, group, stage, date, ho
                                 />
 
                                 {saved[player] ? (
-                                    <CheckCheck size={20} className="text-[#00c752] font-bold" />
+                                    // <CheckCheck size={20} className="text-[#00c752] font-bold" />
+                                    <button
+                                        onClick={() => handleSave(player)}
+                                        disabled={isFinished}
+                                        className={`text-sm px-2 py-1 rounded ${isFinished
+                                            ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                                            : 'bg-[#00c752] text-white cursor-pointer hover:shadow-md'
+                                            }`}
+                                    >
+                                        <CircleCheckBig size={16} />
+                                    </button>
                                 ) : (
                                     <button
                                         onClick={() => handleSave(player)}
@@ -222,6 +245,10 @@ export default function MatchCard({ matchId, predictions, group, stage, date, ho
                                     <option value={homeTeam}>{homeTeam}</option>
                                     <option value={awayTeam}>{awayTeam}</option>
                                 </select>
+                            )}
+
+                            {errors[player] && (
+                                <p className="text-sm text-red-500 text-center font-nunito font-bold">{errors[player]}</p>
                             )}
                         </div>
                     ))}
