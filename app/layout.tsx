@@ -67,6 +67,8 @@ export default function RootLayout({
                                 <span>CAMPEÓN</span>
                             </Link>
                         </nav>
+                        <Image src="/messi-gracias.jpg" alt="Gracias Leo" width={500} height={100} />
+                        <br />
                         <main className="w-full">
                             {children}
                         </main>
